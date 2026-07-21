@@ -9,7 +9,7 @@ interface Receipt {
   fileName: string
   notes: string | null
   status: string
-  createdAt: string
+  createdAt: Date | string
 }
 
 export default function PaymentReceiptUpload({
