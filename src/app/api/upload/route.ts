@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server"
-import { writeFile, mkdir } from "fs/promises"
-import path from "path"
 import { auth } from "@/lib/auth"
 import { validateFile } from "@/lib/security"
+import { prisma } from "@/lib/prisma"
 
 export async function POST(req: Request) {
   const session = await auth()
@@ -22,17 +21,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: validationError }, { status: 400 })
     }
 
-    const ext = path.extname(file.name)?.toLowerCase() || ".png"
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}${ext}`
-    const uploadDir = path.join(process.cwd(), "public", "uploads", "receipts")
-    await mkdir(uploadDir, { recursive: true })
-
     const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-    const filePath = path.join(uploadDir, fileName)
-    await writeFile(filePath, buffer)
+    const base64 = Buffer.from(bytes).toString("base64")
+    const mimeType = file.type || "application/octet-stream"
+    const dataUrl = `data:${mimeType};base64,${base64}`
 
-    return NextResponse.json({ success: true, url: `/uploads/receipts/${fileName}` })
+    const receipt = await prisma.paymentReceipt.create({
+      data: {
+        userId: session.user.id,
+        fileName: file.name,
+        fileUrl: dataUrl,
+        status: "PENDING",
+      },
+    })
+
+    return NextResponse.json({ success: true, url: dataUrl, id: receipt.id })
   } catch (error) {
     console.error("Upload error:", error)
     return NextResponse.json({ error: "Dosya yüklenemedi" }, { status: 500 })
