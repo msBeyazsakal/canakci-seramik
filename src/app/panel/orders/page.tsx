@@ -40,7 +40,7 @@ export default async function OrdersPage({
   if (status && status !== "all") whereBase.status = status
 
   const orders = await prisma.order.findMany({
-    where: whereBase,
+    where: whereBase as any,
     include: { items: true },
     orderBy: { createdAt: "desc" },
   })
