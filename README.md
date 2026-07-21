@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Çanakçı Seramik Web Sitesi
 
-## Getting Started
+Çanakkale'deki seramik atölyesi için web sitesi. Ürün sergileme, etkinlik yönetimi, online sipariş ve admin paneli içerir.
 
-First, run the development server:
+## Teknoloji
+
+- Next.js 14 (App Router)
+- Tailwind CSS
+- Prisma (PostgreSQL)
+- NextAuth.js
+- Docker
+
+## Kurulum
 
 ```bash
+# 1. PostgreSQL'i başlat
+npm run db:up
+
+# 2. Veritabanını oluştur ve migrate et
+npm run db:migrate
+
+# 3. Seed verilerini yükle (admin kullanıcı + varsayılan ayarlar)
+npm run db:seed
+
+# 4. Geliştirme sunucusunu başlat
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Varsayılan Admin Hesabı
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **E-posta:** admin@canakci.com
+- **Şifre:** admin123
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scriptler
 
-## Learn More
+| Komut | Açıklama |
+|-------|----------|
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | Production build |
+| `npm run db:up` | PostgreSQL'i Docker ile başlat |
+| `npm run db:migrate` | Prisma migration çalıştır |
+| `npm run db:seed` | Seed verilerini yükle |
+| `npm run db:studio` | Prisma Studio'yu aç |
+| `npm run db:setup` | Tüm DB kurulumunu tek komutta yap |
 
-To learn more about Next.js, take a look at the following resources:
+## Site Haritası
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Public Sayfalar
+- `/` - Ana Sayfa
+- `/products` - Ürünler
+- `/products/[slug]` - Ürün Detay
+- `/events` - Etkinlikler
+- `/events/[slug]` - Etkinlik Detay
+- `/news` - Medya
+- `/about` - Hakkımızda
+- `/contact` - İletişim
+- `/cart` - Sepet
+- `/checkout` - Ödeme
+- `/order/[orderNumber]` - Sipariş Onay
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Müşteri Paneli
+- `/panel` - Dashboard
+- `/panel/orders` - Siparişlerim
+- `/panel/events` - Etkinlik Kayıtlarım
+- `/panel/profile` - Profil
 
-## Deploy on Vercel
+### Admin Paneli
+- `/admin` - Dashboard
+- `/admin/products` - Ürün Yönetimi
+- `/admin/categories` - Kategori Yönetimi
+- `/admin/sliders` - Slider Yönetimi
+- `/admin/events` - Etkinlik Yönetimi
+- `/admin/event-registrations` - Katılımlar
+- `/admin/orders` - Siparişler
+- `/admin/news` - Medya Yönetimi
+- `/admin/messages` - Mesajlar
+- `/admin/settings` - Site Ayarları
+- `/admin/users` - Kullanıcı Yönetimi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Ödeme
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Şu an için **Havale/EFT** ile ödeme alınmaktadır. Müşteri sipariş oluşturduktan sonra admin panelde görünen banka hesap bilgilerine havale yapar, admin siparişi onaylar. Gelecekte İyzico entegrasyonu eklenebilir.
